@@ -6,6 +6,8 @@
   "version": "1.0.0",
   "main": "server.js",
   "dependencies": {
-    "express-gateway": "^1.16.11"
+    "express-gateway": "^1.16.11",
+    "fs": "0.0.1-security",
+    "js-yaml": "^4.1.0"
   }
 }

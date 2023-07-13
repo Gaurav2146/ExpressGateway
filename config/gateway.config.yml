@@ -1,20 +1,17 @@
 http:
   port: 8080
-# admin:
-#   port: 9876
-#   host: localhost
 apiEndpoints:
   api:
     host: localhost
     methods: GET
-    paths: '/user'
+    paths: /user
   protected:
     host: localhost
     methods: POST
-    paths: '/protected'  
+    paths: /protected
 serviceEndpoints:
   httpbin:
-    url: 'http://localhost:4000'
+    url: http://localhost:9090
 policies:
   - basic-auth
   - cors
@@ -32,27 +29,23 @@ pipelines:
       - api
       - protected
     policies:
-      - log: # policy name
-          - action:    # array of condition/actions objects
-              message: ${req.method} ${req.originalUrl} # parameter for log action
-
-    # Uncomment `key-auth:` when instructed to in the Getting Started guide.
+      - log:
+          - action:
+              message: ${req.method} ${req.originalUrl}
       - jwt:
           - action:
-              secretOrPublicKey: 'your_secret_key'
+              secretOrPublicKey: your_secret_key
               checkCredentialExistence: false
       - request-transformer:
-            action:
-              body:
-                add:
-                  user: req.user
-              headers:
-                add:
-                  user_name: req.user.name
-                  user_iat: req.user.iat
+          action:
+            body:
+              add:
+                user: req.user
+            headers:
+              add:
+                user_name: req.user.name
+                user_iat: req.user.iat
       - proxy:
           - action:
-              serviceEndpoint: httpbin 
+              serviceEndpoint: httpbin
               changeOrigin: true
-    
- 
