@@ -1,17 +1,32 @@
 http:
   port: 8080
 apiEndpoints:
-  api:
+  user:
     host: localhost
-    methods: GET
-    paths: /user
-  protected:
+    paths:
+      - /user
+      - /user/*
+  order:
     host: localhost
-    methods: POST
-    paths: /protected
+    paths:
+      - /order
+      - /order/*
+  payment:
+    host: localhost
+    paths:
+      - /payment
+      - /payment/*
 serviceEndpoints:
-  httpbin:
-    url: http://localhost:9090
+  userService:
+    url: http://localhost:3000
+  orderService:
+    urls:
+      - http://localhost:3000
+      - http://localhost:5000
+  paymentService:
+    urls:
+      - http://localhost:6000
+      - http://localhost:4000
 policies:
   - basic-auth
   - cors
@@ -20,14 +35,13 @@ policies:
   - log
   - oauth2
   - proxy
-  - rate-limit
   - jwt
   - request-transformer
+  - rate-limit
 pipelines:
-  default:
+  userPipeline:
     apiEndpoints:
-      - api
-      - protected
+      - user
     policies:
       - log:
           - action:
@@ -47,5 +61,27 @@ pipelines:
                 user_iat: req.user.iat
       - proxy:
           - action:
-              serviceEndpoint: httpbin
+              serviceEndpoint: userService
+              changeOrigin: true
+  orderPipeline:
+    apiEndpoints:
+      - order
+    policies:
+      - log:
+          - action:
+              message: ${req.method} ${req.originalUrl}
+      - proxy:
+          - action:
+              serviceEndpoint: orderService
+              changeOrigin: true
+  paymentPipeline:
+    apiEndpoints:
+      - payment
+    policies:
+      - log:
+          - action:
+              message: ${req.method} ${req.originalUrl}
+      - proxy:
+          - action:
+              serviceEndpoint: paymentService
               changeOrigin: true

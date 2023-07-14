@@ -16,25 +16,17 @@ consulClient.agent.service.register({
     interval: '10s',
   }
 }, () => {
-  console.log(`Service ${serviceName} registered`);  
+  console.log(`Service ${serviceName} registered`);
 });
 
-// setInterval(()=>{
-//   checkStatus();
-// },5000)
-
-
-app.get('/health',(req,res,next)=>{
+app.get('/health', (req, res, next) => {
   res.status(200).send("This is Healthy");
 })
 
-async function checkStatus()
-{
-let data = await consulClient.health.checks("paymentServer2");
-console.log(data);
-}
+app.get('/payment', (req, res, next) => {
+  res.status(200).send("Get All payment successfully from paymentServer2");
+})
 
-
-app.listen(4000,()=>{
-console.log("server is listening at port 4000");
+app.listen(4000, () => {
+  console.log("server is listening at port 4000");
 })
